@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quinta Scarlet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,520;9..144,680&family=Outfit:wght@380;520;650&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pool: #0c7ea8;
+    --pool-deep: #08384c;
+    --leaf: #1d6a45;
+    --sand: #f3e6cf;
+    --thatch: #8a6240;
+    --foam: #f7f4ee;
+    --ink: #163246;
+    --line: rgba(22, 50, 70, .12);
+    --warn: #9a5b12;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: Outfit, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: #0b2c3a;
+  }
+  button, input { font: inherit; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 680; margin: 0; }
+  .login {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+      linear-gradient(180deg, rgba(8, 32, 44, .35), rgba(8, 28, 38, .72)),
+      url("quinta.jpg") center 30% / cover no-repeat;
+  }
+  .card {
+    width: min(420px, 100%);
+    background: rgba(247, 244, 238, .94);
+    border-radius: 22px;
+    padding: 28px 26px 24px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+  }
+  .eyebrow {
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--thatch);
+    font-weight: 650;
+  }
+  .card h1 { font-size: 40px; color: var(--pool-deep); margin: 6px 0 8px; }
+  .card p { margin: 0 0 18px; color: #3d5564; }
+  .pin {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: white;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 28px;
+    letter-spacing: .4em;
+    text-align: center;
+  }
+  .pin:focus { outline: 2px solid var(--pool); }
+  .go, .tab, .mes select {
+    cursor: pointer;
+  }
+  .go {
+    width: 100%;
+    margin-top: 12px;
+    border: 0;
+    border-radius: 14px;
+    padding: 14px;
+    background: var(--pool);
+    color: white;
+    font-weight: 650;
+    font-size: 16px;
+  }
+  .go:hover { background: #0a6d92; }
+  .err { color: #9d2c2c; min-height: 1.2em; margin: 8px 0 0; font-size: 14px; }
+  .app { display: none; min-height: 100vh; background: var(--foam); }
+  .hero {
+    position: relative;
+    color: white;
+    padding: 28px 22px 18px;
+    background:
+      linear-gradient(180deg, rgba(8, 40, 56, .25), rgba(8, 32, 44, .82)),
+      url("quinta.jpg") center 42% / cover no-repeat;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; }
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 13px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #7dffa8;
+    box-shadow: 0 0 0 0 rgba(125, 255, 168, .7);
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse {
+    70% { box-shadow: 0 0 0 8px rgba(125, 255, 168, 0); }
+  }
+  .hero h1 { font-size: clamp(36px, 5vw, 58px); margin: 10px 0 4px; }
+  .sub { opacity: .9; }
+  .tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;
+  }
+  .tab {
+    border: 1px solid rgba(255,255,255,.35);
+    background: transparent;
+    color: white;
+    border-radius: 999px;
+    padding: 8px 14px;
+  }
+  .tab.on { background: var(--sand); color: var(--pool-deep); border-color: var(--sand); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 18px 16px 48px; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .stat, .block, .pedido {
+    background: white;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+  }
+  .stat { padding: 14px 16px; }
+  .stat span { display: block; color: #5d7280; font-size: 13px; }
+  .stat strong { display: block; margin-top: 4px; font-size: 26px; color: var(--pool-deep); }
+  .stat em { font-style: normal; color: var(--warn); font-size: 13px; }
+  .grid2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 12px; margin-top: 12px; }
+  .block { padding: 16px; margin-top: 12px; }
+  .block h2 { font-size: 26px; color: var(--pool-deep); }
+  .block .hint { color: #5d7280; font-size: 13px; margin: 4px 0 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+  th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #6a7e8b; font-weight: 650; }
+  td.num, th.num { text-align: right; }
+  .pay {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--line); font-size: 18px;
+  }
+  .pay b { color: var(--leaf); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pedido { padding: 14px 16px; margin-top: 10px; }
+  .pedido header { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .badge {
+    border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 650;
+  }
+  .ok { background: #e5f6ea; color: var(--leaf); }
+  .no { background: #fff1df; color: var(--warn); }
+  .muted { color: #5d7280; font-size: 13px; }
+  .line { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; font-size: 14px; }
+  .dia {
+    width: 100%; text-align: left; background: white; border: 1px solid var(--line);
+    border-radius: 16px; padding: 14px 16px; margin-top: 10px; cursor: pointer;
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  }
+  .dia:hover { border-color: var(--pool); }
+  .mesbar { display: flex; justify-content: space-between; gap: 12px; align-items: end; }
+  select {
+    border-radius: 12px; border: 1px solid var(--line); padding: 8px 10px; background: white;
+  }
+  .note {
+    background: #fff8ee; border: 1px solid #efd7b4; color: #6d4a22;
+    border-radius: 14px; padding: 12px 14px; margin-bottom: 12px;
+  }
+  .empty { color: #5d7280; padding: 8px 0 2px; }
+  .off .dot { background: #ffb4b4; animation: none; }
+  @media (max-width: 800px) {
+    .stats, .grid2, .cols { grid-template-columns: 1fr; }
+    .stat strong { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<section class="login" id="login">
+  <form class="card" id="form">
+    <div class="eyebrow">Quinta Scarlet</div>
+    <h1>Panel en vivo</h1>
+    <p>Los pedidos, las ganancias y los días salen del celular. Entra con el PIN.</p>
+    <input class="pin" id="pin" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••••" autofocus>
+    <button class="go" type="submit">Entrar</button>
+    <p class="err" id="err"></p>
+  </form>
+</section>
+<main class="app" id="app">
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="live" id="live"><span class="dot"></span><span id="liveText">Conectando…</span></div>
+      <h1>Quinta Scarlet</h1>
+      <div class="sub" id="cuando"></div>
+      <nav class="tabs">
+        <button class="tab on" data-tab="hoy">Hoy</button>
+        <button class="tab" data-tab="dias">Días anteriores</button>
+        <button class="tab" data-tab="mes">Mes</button>
+        <button class="tab" data-tab="bolos">Bolos</button>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap" id="contenido"></div>
+</main>
+<script>
+const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+const fechaLarga = new Intl.DateTimeFormat("es-EC", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const fechaCorta = new Intl.DateTimeFormat("es-EC", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+let estado = null;
+let tab = "hoy";
+let diaId = null;
+let mesClave = null;
+
+const binRemoto = location.hash.replace(/^#/, "");
+const remoto = binRemoto.length > 8;
+let pinRemoto = "";
+let ultimoCifrado = "";
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const pin = document.getElementById("pin").value.trim();
+  const err = document.getElementById("err");
+  err.textContent = "";
+  if (remoto) {
+    pinRemoto = pin;
+    const ok = await cargarRemoto();
+    if (!ok) {
+      err.textContent = "PIN incorrecto, o el celular todavía no ha publicado.";
+      return;
+    }
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    setInterval(cargarRemoto, 8000);
+    return;
+  }
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pin })
+  });
+  if (!res.ok) {
+    err.textContent = "PIN incorrecto.";
+    return;
+  }
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  cargar();
+  setInterval(cargar, 3000);
+});
+
+document.querySelectorAll(".tab").forEach((b) => {
+  b.addEventListener("click", () => {
+    tab = b.dataset.tab;
+    diaId = null;
+    document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("on", x === b));
+    pintar();
+  });
+});
+
+async function cargar() {
+  const live = document.getElementById("live");
+  try {
+    const res = await fetch("/api/estado", { cache: "no-store" });
+    if (res.status === 401) {
+      document.getElementById("login").style.display = "grid";
+      document.getElementById("app").style.display = "none";
+      return;
+    }
+    estado = await res.json();
+    live.classList.remove("off");
+    document.getElementById("liveText").textContent = "En vivo, desde el celular";
+    document.getElementById("cuando").textContent = "Actualizado " + fechaCorta.format(new Date(estado.actualizado));
+    if (!mesClave && estado.meses.length) {
+      const hoy = new Date().toISOString().slice(0, 7);
+      mesClave = estado.meses.some((m) => m.clave === hoy) ? hoy : estado.meses[0].clave;
+    }
+    pintar();
+  } catch (_) {
+    live.classList.add("off");
+    document.getElementById("liveText").textContent = "Sin conexión con el celular";
+  }
+}
+
+function pintar() {
+  const root = document.getElementById("contenido");
+  if (!estado) return;
+  if (tab === "hoy") root.innerHTML = vistaDia(estado.abierto, true);
+  else if (tab === "dias") root.innerHTML = vistaDias();
+  else if (tab === "mes") root.innerHTML = vistaMes();
+  else root.innerHTML = vistaBolos();
+  enganchar();
+}
+
+function vistaDia(d, abierto) {
+  const titulo = abierto ? "Día abierto en el celular" : fechaLarga.format(new Date(d.fecha));
+  return `
+    <div class="stats">
+      ${stat("Ganancias", money.format(d.ganancias), "Pedidos pagados")}
+      ${stat("Efectivo", money.format(d.efectivo))}
+      ${stat("Transferencia", money.format(d.transferencia))}
+      ${stat("Por cobrar", money.format(d.porCobrar), d.pendientes + " pendientes")}
+    </div>
+    <div class="grid2">
+      <section class="block">
+        <h2>${titulo}</h2>
+        <p class="hint">${d.pagados} pagados · ${d.pendientes} sin pagar. Las ganancias son las mismas que marca el celular.</p>
+        <div class="pay"><span>Entradas</span><b>${d.entradasPersonas} · ${money.format(d.entradasDinero)}</b></div>
+        <div class="pay"><span>Contenedores</span><b>${d.contenedoresCant} · ${money.format(d.contenedoresDinero)}</b></div>
+        <div class="pay"><span>Tortas</span><b>${d.tortasCant} · ${money.format(d.tortasDinero)}</b></div>
+        <div class="pay"><span>Fundas</span><b>${d.fundasCant} · ${money.format(d.fundasDinero)}</b></div>
+        <div class="pay"><span>Gastos adicionales</span><b>${money.format(d.gastos)}</b></div>
+      </section>
+      <section class="block">
+        <h2>Cómo se cobró</h2>
+        <p class="hint">Solo abonos de pedidos pagados, sin pasar el total del pedido.</p>
+        <div class="pay"><span>Efectivo</span><b>${money.format(d.efectivo)}</b></div>
+        <div class="pay"><span>Transferencia</span><b>${money.format(d.transferencia)}</b></div>
+        <div class="pay"><span>Suma de abonos</span><b>${money.format(d.efectivo + d.transferencia)}</b></div>
+      </section>
+    </div>
+    <div class="cols">
+      ${tabla("Platos", d.platos)}
+      ${tabla("Bebidas", d.bebidas)}
+      ${tabla("Coctelería", d.cocteleria)}
+      ${tabla("Helados", d.helados)}
+      ${tabla("Otros", d.otros)}
+      ${tabla("Gastos", d.gastosDetalle)}
+    </div>
+    <section class="block">
+      <h2>Pedidos</h2>
+      ${d.pedidos.length ? d.pedidos.map(pedidoHtml).join("") : '<p class="empty">Todavía no hay pedidos en este día.</p>'}
+    </section>`;
+}
+
+function stat(label, value, extra) {
+  return `<article class="stat"><span>${label}</span><strong>${value}</strong>${extra ? `<em>${extra}</em>` : ""}</article>`;
+}
+
+function tabla(titulo, items) {
+  const filas = (items || []).length
+    ? items.map((i) => `<tr><td>${esc(i.nombre)}</td><td class="num">${i.cantidad}</td><td class="num">${money.format(i.dinero || 0)}</td></tr>`).join("")
+    : `<tr><td colspan="3" class="empty">Nada en este grupo.</td></tr>`;
+  return `<section class="block"><h2>${titulo}</h2><table><thead><tr><th>Nombre</th><th class="num">Cant.</th><th class="num">Total</th></tr></thead><tbody>${filas}</tbody></table></section>`;
+}
+
+function pedidoHtml(p) {
+  const cuando = fechaCorta.format(new Date(p.fecha));
+  const estadoPago = p.pagado ? '<span class="badge ok">Pagado</span>' : '<span class="badge no">Pendiente</span>';
+  const abonos = (p.abonos || []).map((a) => `${esc(a.metodo)} ${money.format(a.monto)}`).join(" · ");
+  const lineas = (p.lineas || []).map((l) => `<div class="line"><span>${l.cantidad} ${esc(l.nombre)} <span class="muted">${esc(l.grupo)}</span></span><span>${money.format(l.dinero)}</span></div>`).join("");
+  const aviso = p.pagado && p.total > p.abonado + 0.009
+    ? `<p class="muted">Se agregó algo después del pago. En el celular ese saldo queda aparte hasta completar el cobro, pero la ganancia del día usa el total del pedido pagado.</p>`
+    : "";
+  return `<article class="pedido"><header><div><strong>${esc(p.cliente || "Sin nombre")}</strong><div class="muted">${esc(p.lugar || "Sin lugar")} · ${esc(p.mesero || "Sin mesero")} · ${cuando}</div></div><div>${estadoPago}<div><strong>${money.format(p.total)}</strong></div></div></header>${lineas}${abonos ? `<p class="muted">Abonos: ${abonos}</p>` : ""}${aviso}</article>`;
+}
+
+function vistaDias() {
+  const dias = estado.cerrados || [];
+  if (diaId) {
+    const d = dias.find((x) => x.id === diaId);
+    if (d) return `<button class="dia" id="volver" type="button"><span>Volver a la lista</span></button>${vistaDia(d, false)}`;
+  }
+  if (!dias.length) {
+    return `<section class="block"><h2>Días anteriores</h2><p class="empty">Cuando en el celular uses limpiar el día, ese cierre queda guardado aquí con sus platos, bebidas y cobros.</p></section>`;
+  }
+  return `<section class="block"><h2>Días anteriores</h2><p class="hint">Cada fila es un día que ya se cerró en el celular.</p></section>` +
+    dias.map((d) => `<button class="dia" data-dia="${d.id}" type="button"><span><strong>${fechaLarga.format(new Date(d.fecha))}</strong><div class="muted">${d.pagados} pagados · ${d.pendientes} pendientes</div></span><strong>${money.format(d.ganancias)}</strong></button>`).join("");
+}
+
+function vistaMes() {
+  const meses = estado.meses || [];
+  if (!meses.length) {
+    return `<section class="block"><h2>Mes</h2><p class="empty">Aún no hay ventas para armar un mes.</p></section>`;
+  }
+  const m = meses.find((x) => x.clave === mesClave) || meses[0];
+  mesClave = m.clave;
+  const opciones = meses.map((x) => `<option value="${x.clave}" ${x.clave === m.clave ? "selected" : ""}>${esc(x.etiqueta)}</option>`).join("");
+  return `
+    <div class="mesbar">
+      <div><div class="eyebrow">Ganancias del mes</div><h2 style="font-size:42px;color:#08384c">${money.format(m.ganancias)}</h2></div>
+      <select id="mes">${opciones}</select>
+    </div>
+    <p class="hint" style="margin-top:6px">Incluye el día que sigue abierto en el celular y los días ya cerrados. Los bolos no van en esta suma.</p>
+    <div class="stats">
+      ${stat("Efectivo", money.format(m.efectivo))}
+      ${stat("Transferencia", money.format(m.transferencia))}
+      ${stat("Por cobrar", money.format(m.porCobrar), m.pendientes + " pendientes")}
+      ${stat("Días", String(m.dias), m.pagados + " pedidos pagados")}
+    </div>
+    <div class="grid2">
+      <section class="block">
+        <h2>${esc(m.etiqueta)}</h2>
+        <div class="pay"><span>Entradas</span><b>${m.entradasPersonas} · ${money.format(m.entradasDinero)}</b></div>
+        <div class="pay"><span>Contenedores</span><b>${money.format(m.contenedoresDinero)}</b></div>
+        <div class="pay"><span>Tortas</span><b>${money.format(m.tortasDinero)}</b></div>
+        <div class="pay"><span>Fundas</span><b>${money.format(m.fundasDinero)}</b></div>
+        <div class="pay"><span>Gastos adicionales</span><b>${money.format(m.gastos)}</b></div>
+      </section>
+      <section class="block">
+        <h2>Bolos del mes</h2>
+        <p class="hint">${esc(estado.bolos.nota)}</p>
+        <div class="pay"><span>Unidades</span><b>${m.bolosUnidades}</b></div>
+        <div class="pay"><span>Monto aparte</span><b>${money.format(m.bolosDinero)}</b></div>
+      </section>
+    </div>
+    <div class="cols">
+      ${tabla("Platos", m.platos)}
+      ${tabla("Bebidas", m.bebidas)}
+      ${tabla("Coctelería", m.cocteleria)}
+      ${tabla("Helados", m.helados)}
+      ${tabla("Otros", m.otros)}
+    </div>`;
+}
+
+function vistaBolos() {
+  const b = estado.bolos;
+  const activo = b.activo;
+  const hist = b.historial || [];
+  return `
+    <div class="note">${esc(b.nota)}</div>
+    <div class="stats">
+      ${stat("Bolos ahora", String(activo.unidades), "Contador abierto")}
+      ${stat("Monto aparte", money.format(activo.dinero))}
+    </div>
+    ${tabla("Sabores de ahora", activo.sabores)}
+    <section class="block"><h2>Días de bolos</h2>
+      ${hist.length ? hist.map((d) => `<article class="pedido"><header><div><strong>${fechaCorta.format(new Date(d.fecha))}</strong><div class="muted">${esc(d.nota || "Guardado")}</div></div><strong>${d.unidades} · ${money.format(d.dinero)}</strong></header>${(d.sabores || []).map((s) => `<div class="line"><span>${s.cantidad} ${esc(s.nombre)}</span><span>${money.format(s.dinero)}</span></div>`).join("")}</article>`).join("") : '<p class="empty">Todavía no hay días de bolos guardados.</p>'}
+    </section>`;
+}
+
+function enganchar() {
+  document.querySelectorAll("[data-dia]").forEach((b) => {
+    b.addEventListener("click", () => { diaId = b.dataset.dia; pintar(); });
+  });
+  const volver = document.getElementById("volver");
+  if (volver) volver.addEventListener("click", () => { diaId = null; pintar(); });
+  const mes = document.getElementById("mes");
+  if (mes) mes.addEventListener("change", () => { mesClave = mes.value; pintar(); });
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+async function descifrar(b64, pin) {
+  const texto = new TextEncoder();
+  const clave = await crypto.subtle.digest("SHA-256", texto.encode("qs-panel-v1-" + pin));
+  const ivFull = await crypto.subtle.digest("SHA-256", texto.encode("qs-panel-iv-" + pin));
+  const iv = ivFull.slice(0, 16);
+  const key = await crypto.subtle.importKey("raw", clave, { name: "AES-CBC" }, false, ["decrypt"]);
+  const raw = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  const buf = await crypto.subtle.decrypt({ name: "AES-CBC", iv }, key, raw);
+  return JSON.parse(new TextDecoder().decode(buf));
+}
+
+async function cargarRemoto() {
+  const live = document.getElementById("live");
+  try {
+    const res = await fetch("https://j.jstash.app/" + binRemoto, { cache: "no-store" });
+    if (!res.ok) throw new Error("sin datos");
+    const paquete = await res.json();
+    if (!paquete.c) throw new Error("vacio");
+    if (paquete.c === ultimoCifrado && estado) return true;
+    estado = await descifrar(paquete.c, pinRemoto);
+    ultimoCifrado = paquete.c;
+    live.classList.remove("off");
+    document.getElementById("liveText").textContent = "Por internet, desde el celular";
+    document.getElementById("cuando").textContent = "Publicado " + fechaCorta.format(new Date(estado.actualizado));
+    if (!mesClave && estado.meses && estado.meses.length) {
+      const hoy = new Date().toISOString().slice(0, 7);
+      mesClave = estado.meses.some((m) => m.clave === hoy) ? hoy : estado.meses[0].clave;
+    }
+    pintar();
+    return true;
+  } catch (_) {
+    if (live) {
+      live.classList.add("off");
+      document.getElementById("liveText").textContent = "Sin datos nuevos del celular";
+    }
+    return false;
+  }
+}
+
+fetch("/api/estado", { cache: "no-store" }).then(async (res) => {
+  if (!res.ok) return;
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  estado = await res.json();
+  if (estado.meses.length) {
+    const hoy = new Date().toISOString().slice(0, 7);
+    mesClave = estado.meses.some((m) => m.clave === hoy) ? hoy : estado.meses[0].clave;
+  }
+  document.getElementById("liveText").textContent = "En vivo, desde el celular";
+  document.getElementById("cuando").textContent = "Actualizado " + fechaCorta.format(new Date(estado.actualizado));
+  pintar();
+  setInterval(cargar, 3000);
+}).catch(() => {});
+</script>
+</body>
+</html>
